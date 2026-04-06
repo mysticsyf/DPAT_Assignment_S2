@@ -12,7 +12,7 @@ import java.io.*;
 
 public class UserManager {
 
-    private String userFile = "users.txt";
+    private String userFile = "users/users.txt";
 
     public UserManager() {
         initUsers();
