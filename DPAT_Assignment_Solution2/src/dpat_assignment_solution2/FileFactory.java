@@ -8,8 +8,13 @@ package dpat_assignment_solution2;
  *
  * @author yifen
  */
-import java.util.*;
+public class FileFactory {
 
-public interface PricingStrategy {
-    double calculateTotal(List<Item> items, List<Integer> quantities);
+    public static MyFile createFile(String name, String path) {
+        return new MyFile(name, path);
+    }
+
+    public static Folder createFolder(String name, String path) {
+        return new Folder(name, path);
+    }
 }

@@ -8,15 +8,6 @@ package dpat_assignment_solution2;
  *
  * @author yifen
  */
-public class FileManager {
-
-    private FileOp strategy;
-
-    public void setStrategy(FileOp strategy) {
-        this.strategy = strategy;
-    }
-
-    public void execute(MyFile file) {
-        strategy.execute(file);
-    }
+public interface FileOp {
+    void execute(MyFile file);
 }
