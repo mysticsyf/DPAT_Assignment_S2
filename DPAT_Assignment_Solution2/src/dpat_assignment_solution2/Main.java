@@ -8,27 +8,40 @@ package dpat_assignment_solution2;
  *
  * @author yifen
  */
+import java.util.Scanner;
+
 public class Main {
+
     public static void main(String[] args) {
 
-        FileManager manager = new FileManager();
+        Scanner sc = new Scanner(System.in);
+        String path = "data/";
 
-        MyFile file = FileFactory.createFile("test.txt", "C:\\file_system\\");
+        System.out.print("Enter file name: ");
+        String name = sc.nextLine();
 
-        // WRITE
-        manager.setStrategy(new WriteFile("Hello Strategy Pattern"));
-        manager.execute(file);
+        MyFile file = FileFactory.createFile(name, path);
+        FileManager fm = new FileManager();
 
-        // READ
-        manager.setStrategy(new ReadFile());
-        manager.execute(file);
+        while (true) {
 
-        // UPDATE
-        manager.setStrategy(new UpdateFile("Updated Content"));
-        manager.execute(file);
+            System.out.println("\n1. Create");
+            System.out.println("2. Read");
+            System.out.println("3. Update");
+            System.out.println("4. Delete");
+            System.out.println("0. Exit");
 
-        // DELETE
-        manager.setStrategy(new DeleteFile());
-        manager.execute(file);
+            int c = sc.nextInt();
+
+            switch (c) {
+                case 1 -> fm.setStrategy(new CreateFileOp());
+                case 2 -> fm.setStrategy(new ReadFileOp());
+                case 3 -> fm.setStrategy(new UpdateFileOp());
+                case 4 -> fm.setStrategy(new DeleteFileOp());
+                case 0 -> { return; }
+            }
+
+            fm.execute(file);
+        }
     }
 }

@@ -9,19 +9,19 @@ package dpat_assignment_solution2;
  * @author yifen
  */
 public class MyFile {
-    private String fileName;
+    private String name;
     private String path;
 
-    public MyFile(String fileName, String path) {
-        this.fileName = fileName;
+    public MyFile(String name, String path) {
+        this.name = name;
         this.path = path;
     }
 
     public String getFullPath() {
-        return path + fileName;
+        return path + "/" + name;
     }
 
-    public String getFileName() {
-        return fileName;
+    public String getName() {
+        return name;
     }
 }

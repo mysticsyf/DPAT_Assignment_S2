@@ -4,23 +4,28 @@
  */
 package dpat_assignment_solution2;
 
+import java.io.FileWriter;
+import java.util.Scanner;
+
 /**
  *
  * @author yifen
  */
-public class UpdateFile implements FileOp {
-    private String content;
-
-    public UpdateFile(String content) {
-        this.content = content;
-    }
+public class UpdateFileOp implements FileOp {
 
     public void execute(MyFile file) {
         try {
-            java.io.FileWriter fw = new java.io.FileWriter(file.getFullPath());
+            Scanner sc = new Scanner(System.in);
+
+            System.out.println("Enter new content:");
+            String content = sc.nextLine();
+
+            FileWriter fw = new FileWriter(file.getFullPath());
             fw.write(content);
             fw.close();
-            System.out.println("Updated successfully.");
+
+            System.out.println("Updated.");
+
         } catch (Exception e) {
             System.out.println("Update error.");
         }

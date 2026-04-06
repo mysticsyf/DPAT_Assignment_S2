@@ -4,18 +4,20 @@
  */
 package dpat_assignment_solution2;
 
+import java.io.File;
+
 /**
  *
  * @author yifen
  */
-import java.io.File;
 
-public class DeleteFile implements FileOp {
+public class DeleteFileOp implements FileOp {
+
     public void execute(MyFile file) {
         File f = new File(file.getFullPath());
 
         if (f.delete()) {
-            System.out.println("Deleted successfully.");
+            System.out.println("Deleted.");
         } else {
             System.out.println("Delete failed.");
         }

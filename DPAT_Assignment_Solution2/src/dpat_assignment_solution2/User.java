@@ -8,15 +8,14 @@ package dpat_assignment_solution2;
  *
  * @author yifen
  */
-public class FolderManager {
+public class User {
+    public String username;
+    public String password;
+    public String role;
 
-    private FolderOp strategy;
-
-    public void setStrategy(FolderOp strategy) {
-        this.strategy = strategy;
-    }
-
-    public void execute(Folder folder) {
-        strategy.execute(folder);
+    public User(String u, String p, String r) {
+        username = u;
+        password = p;
+        role = r;
     }
 }
