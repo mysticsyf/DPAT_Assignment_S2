@@ -51,6 +51,7 @@ public class Main {
 
             System.out.println("0. Exit");
 
+            System.out.print("Input: ");
             int choice = sc.nextInt();
             sc.nextLine();
 
@@ -70,6 +71,7 @@ public class Main {
                         System.out.println("5. Rename File");
                         System.out.println("6. Back");
 
+                        System.out.print("Input: ");
                         int c = sc.nextInt();
                         sc.nextLine();
 
@@ -101,6 +103,7 @@ public class Main {
                         System.out.println("3. Rename Folder");
                         System.out.println("4. Back");
 
+                        System.out.print("Input: ");
                         int c = sc.nextInt();
                         sc.nextLine();
 
@@ -126,12 +129,15 @@ public class Main {
                     if (!user.role.equals("admin")) break;
 
                     while (true) {
+                        
+                        um.viewUsers();
 
                         System.out.println("\n--- USER MENU ---");
                         System.out.println("1. Add User");
-                        System.out.println("2. View Users");
+                        System.out.println("2. Delete Users");
                         System.out.println("3. Back");
 
+                        System.out.print("Input: ");
                         int c = sc.nextInt();
                         sc.nextLine();
 
@@ -146,7 +152,11 @@ public class Main {
                                 um.addUser(new User(u, p, "user"));
                             }
 
-                            case 2 -> um.viewUsers();
+                            case 2 -> {
+                                System.out.print("Username: ");
+                                String u = sc.nextLine();
+                                um.deleteUser(u);
+                            }
 
                             case 3 -> {
                                 System.out.println("Back to main menu...");
