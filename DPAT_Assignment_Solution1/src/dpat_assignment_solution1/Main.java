@@ -11,45 +11,20 @@ package dpat_assignment_solution1;
 import java.util.*;
 
 public class Main {
+
     static List<User> users = new ArrayList<>();
-    static List<Item> items = new ArrayList<>();
     static Scanner sc = new Scanner(System.in);
+    static FileManager fm = new FileManager();
 
     public static void main(String[] args) {
 
-        initializeFiles();
+        // default user
+        users.add(new User("admin", "1234"));
 
         if (login()) {
             menu();
         } else {
-            System.out.println("Login Failed!");
-        }
-    }
-
-    public static void initializeFiles() {
-
-        // USERS
-        if (!FileManager.fileExists("users.txt")) {
-            FileManager.createFile("users.txt");
-            users.add(new User("admin", "1234"));
-            FileManager.saveUsers(users);
-        } else {
-            users = FileManager.loadUsers();
-        }
-
-        // ITEMS
-        if (!FileManager.fileExists("items.txt")) {
-            FileManager.createFile("items.txt");
-            items.add(new Item(1, "Apple", 2.0, 10));
-            items.add(new Item(2, "Bread", 3.5, 5));
-            FileManager.saveItems(items);
-        } else {
-            items = FileManager.loadItems();
-        }
-
-        // ORDERS
-        if (!FileManager.fileExists("orders.txt")) {
-            FileManager.createFile("orders.txt");
+            System.out.println("Login Failed");
         }
     }
 
@@ -69,56 +44,47 @@ public class Main {
     }
 
     public static void menu() {
-        Order order = new Order(1);
 
         while (true) {
-            System.out.println("\n1. Check Stock");
-            System.out.println("2. Order Item");
-            System.out.println("3. Checkout");
-            System.out.print("Choose: ");
+            System.out.println("\n1. Create File");
+            System.out.println("2. Write File");
+            System.out.println("3. Read File");
+            System.out.println("4. Update File");
+            System.out.println("5. Delete File");
+            System.out.println("6. Exit");
+
+            System.out.print("Choice: ");
             int choice = sc.nextInt();
+            sc.nextLine(); // clear buffer
+
+            System.out.print("Enter file name: ");
+            String name = sc.nextLine();
+
+            // ❗ HARD CODED PATH (for portability testing later)
+            String path = "C:\\file_system\\";
+
+            MyFile file = new MyFile(name, path);
 
             if (choice == 1) {
-                for (Item item : items) {
-                    System.out.println(item.getItemId() + " - " + item.getName()
-                            + " Stock: " + item.checkStock());
-                }
+                fm.createFile(file);
             }
-
             else if (choice == 2) {
-                System.out.print("Enter Item ID: ");
-                int id = sc.nextInt();
-
-                System.out.print("Quantity: ");
-                int qty = sc.nextInt();
-
-                boolean found = false;
-
-                for (Item item : items) {
-                    if (item.getItemId() == id) {
-                        found = true;
-
-                        if (item.checkStock() >= qty) {
-                            order.addItem(item, qty);
-                            System.out.println("Item added!");
-                        } else {
-                            System.out.println("Not enough stock!");
-                        }
-                    }
-                }
-
-                if (!found) {
-                    System.out.println("Item not found!");
-                }
+                System.out.print("Content: ");
+                String content = sc.nextLine();
+                fm.writeFile(file, content);
             }
-
             else if (choice == 3) {
-                order.calculateTotal();
-                System.out.println("Total: RM " + order.getTotal());
-
-                FileManager.saveItems(items);
-                FileManager.saveOrder(order);
-
+                fm.readFile(file);
+            }
+            else if (choice == 4) {
+                System.out.print("New Content: ");
+                String content = sc.nextLine();
+                fm.updateFile(file, content);
+            }
+            else if (choice == 5) {
+                fm.deleteFile(file);
+            }
+            else if (choice == 6) {
                 break;
             }
         }

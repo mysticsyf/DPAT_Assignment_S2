@@ -9,91 +9,96 @@ package dpat_assignment_solution1;
  * @author yifen
  */
 import java.io.*;
-import java.util.*;
 
 public class FileManager {
 
-    public static boolean fileExists(String filename) {
-        File file = new File(filename);
-        return file.exists();
-    }
-
-    public static void createFile(String filename) {
+    public void createFile(MyFile file) {
         try {
-            File file = new File(filename);
-            file.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
+            File f = new File(file.getFullPath());
+            if (f.createNewFile()) {
+                System.out.println("File created.");
+            } else {
+                System.out.println("File already exists.");
+            }
+        } catch (Exception e) {
+            System.out.println("Error creating file.");
         }
     }
 
-    // USERS
-    public static List<User> loadUsers() {
-        List<User> users = new ArrayList<>();
+    public void writeFile(MyFile file, String content) {
+        try {
+            FileWriter fw = new FileWriter(file.getFullPath());
+            fw.write(content);
+            fw.close();
+            System.out.println("Written to file.");
+        } catch (Exception e) {
+            System.out.println("Error writing file.");
+        }
+    }
 
-        try (BufferedReader br = new BufferedReader(new FileReader("users.txt"))) {
+    public void readFile(MyFile file) {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file.getFullPath()));
             String line;
             while ((line = br.readLine()) != null) {
-                String[] data = line.split(",");
-                users.add(new User(data[0], data[1]));
+                System.out.println(line);
             }
+            br.close();
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return users;
-    }
-
-    public static void saveUsers(List<User> users) {
-        try (PrintWriter pw = new PrintWriter("users.txt")) {
-            for (User u : users) {
-                pw.println(u.getUsername() + "," + u.getPassword());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Error reading file.");
         }
     }
 
-    // ITEMS
-    public static List<Item> loadItems() {
-        List<Item> items = new ArrayList<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader("items.txt"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] d = line.split(",");
-                items.add(new Item(
-                        Integer.parseInt(d[0]),
-                        d[1],
-                        Double.parseDouble(d[2]),
-                        Integer.parseInt(d[3])
-                ));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return items;
+    public void updateFile(MyFile file, String newContent) {
+        writeFile(file, newContent); // overwrite
+        System.out.println("File updated.");
     }
 
-    public static void saveItems(List<Item> items) {
-        try (PrintWriter pw = new PrintWriter("items.txt")) {
-            for (Item i : items) {
-                pw.println(i.getItemId() + "," + i.getName() + ","
-                        + i.getPrice() + "," + i.checkStock());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void deleteFile(MyFile file) {
+        File f = new File(file.getFullPath());
+        if (f.delete()) {
+            System.out.println("File deleted.");
+        } else {
+            System.out.println("File not found.");
         }
     }
+    
+    public void createFolder(Folder folder) {
+        File dir = new File(folder.getFullPath());
 
-    // ORDERS
-    public static void saveOrder(Order order) {
-        try (FileWriter fw = new FileWriter("orders.txt", true)) {
-            fw.write("OrderID:" + order.getOrderId() +
-                    ",Total:" + order.getTotal() + "\n");
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (dir.exists()) {
+            System.out.println("Folder already exists.");
+        } else {
+            if (dir.mkdir()) {
+                System.out.println("Folder created.");
+            } else {
+                System.out.println("Failed to create folder.");
+            }
+        }
+    }
+    
+    public void deleteFolder(Folder folder) {
+        File dir = new File(folder.getFullPath());
+
+        if (dir.exists() && dir.isDirectory()) {
+            if (dir.delete()) {
+                System.out.println("Folder deleted.");
+            } else {
+                System.out.println("Folder not empty or failed to delete.");
+            }
+        } else {
+            System.out.println("Folder not found.");
+        }
+    }
+    
+    public void moveFile(MyFile file, Folder targetFolder) {
+        File source = new File(file.getFullPath());
+        File target = new File(targetFolder.getFullPath() + "\\" + file.getFileName());
+
+        if (source.renameTo(target)) {
+            System.out.println("File moved successfully.");
+        } else {
+            System.out.println("Failed to move file.");
         }
     }
 }

@@ -20,12 +20,4 @@ public class User {
     public boolean login(String u, String p) {
         return username.equals(u) && password.equals(p);
     }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
 }
