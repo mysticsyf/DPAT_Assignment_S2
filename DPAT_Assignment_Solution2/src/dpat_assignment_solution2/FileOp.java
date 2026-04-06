@@ -9,5 +9,5 @@ package dpat_assignment_solution2;
  * @author yifen
  */
 public interface FileOp {
-    void execute(MyFile file);
+    void execute(String path);
 }

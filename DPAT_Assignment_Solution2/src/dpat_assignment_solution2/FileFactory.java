@@ -9,8 +9,10 @@ package dpat_assignment_solution2;
  * @author yifen
  */
 public class FileFactory {
-
     public static MyFile createFile(String name, String path) {
+        if (!name.toLowerCase().endsWith(".txt")) {
+            name += ".txt";
+        }
         return new MyFile(name, path);
     }
 

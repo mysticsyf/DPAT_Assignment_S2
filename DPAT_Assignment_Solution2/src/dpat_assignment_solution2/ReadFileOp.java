@@ -4,42 +4,26 @@
  */
 package dpat_assignment_solution2;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-
 /**
  *
  * @author yifen
  */
+import java.io.*;
+
 public class ReadFileOp implements FileOp {
-
-    public void execute(MyFile file) {
-        try {
-            File f = new File(file.getFullPath());
-
-            if (!f.exists()) {
-                System.out.println("File not found.");
-                return;
-            }
-
-            BufferedReader br = new BufferedReader(new FileReader(f));
+    @Override
+    public void execute(String path) {
+        File f = new File(path);
+        if (!f.exists()) {
+            System.out.println("File not found.");
+            return;
+        }
+        try (BufferedReader br = new BufferedReader(new FileReader(f))) {
             String line;
-            boolean empty = true;
-
-            while ((line = br.readLine()) != null) {
-                empty = false;
-                System.out.println(line);
-            }
-
-            if (empty) {
-                System.out.println("(Empty file)");
-            }
-
-            br.close();
-
-        } catch (Exception e) {
-            System.out.println("Read error.");
+            System.out.println("--- Content ---");
+            while ((line = br.readLine()) != null) System.out.println(line);
+        } catch (IOException e) {
+            System.out.println("Error reading file.");
         }
     }
 }

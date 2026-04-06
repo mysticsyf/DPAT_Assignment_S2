@@ -4,30 +4,32 @@
  */
 package dpat_assignment_solution2;
 
-import java.io.FileWriter;
-import java.util.Scanner;
-
 /**
  *
  * @author yifen
  */
+import java.io.*;
+import java.util.Scanner;
+
 public class UpdateFileOp implements FileOp {
-
-    public void execute(MyFile file) {
-        try {
-            Scanner sc = new Scanner(System.in);
-
-            System.out.println("Enter new content:");
-            String content = sc.nextLine();
-
-            FileWriter fw = new FileWriter(file.getFullPath());
-            fw.write(content);
-            fw.close();
-
-            System.out.println("Updated.");
-
-        } catch (Exception e) {
-            System.out.println("Update error.");
+    @Override
+    public void execute(String path) {
+        File f = new File(path);
+        if (!f.exists()) {
+            System.out.println("File not found.");
+            return;
+        }
+        System.out.println("Enter content to append (type 'END' to finish):");
+        Scanner sc = new Scanner(System.in);
+        try (FileWriter fw = new FileWriter(f, true)) {
+            while (true) {
+                String line = sc.nextLine();
+                if (line.equalsIgnoreCase("END")) break;
+                fw.write(line + "\n");
+            }
+            System.out.println("File updated.");
+        } catch (IOException e) {
+            System.out.println("Error updating file.");
         }
     }
 }

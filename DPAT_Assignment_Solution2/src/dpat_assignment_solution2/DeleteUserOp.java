@@ -8,13 +8,17 @@ package dpat_assignment_solution2;
  *
  * @author yifen
  */
-import java.io.File;
+import java.util.Scanner;
 
-public class DeleteFileOp implements FileOp {
+public class DeleteUserOp implements FileOp {
+    private UserManager um;
+    public DeleteUserOp(UserManager um) { this.um = um; }
+
     @Override
     public void execute(String path) {
-        File f = new File(path);
-        if (f.delete()) System.out.println("File deleted successfully.");
-        else System.out.println("Failed to delete file.");
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Username to delete: ");
+        String u = sc.nextLine();
+        um.deleteUser(u);
     }
 }
