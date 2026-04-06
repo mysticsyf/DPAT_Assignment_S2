@@ -8,84 +8,89 @@ package dpat_assignment_solution1;
  *
  * @author yifen
  */
-import java.util.*;
+import java.util.Scanner;
 
 public class Main {
 
-    static List<User> users = new ArrayList<>();
-    static Scanner sc = new Scanner(System.in);
-    static FileManager fm = new FileManager();
-
     public static void main(String[] args) {
 
-        // default user
-        users.add(new User("admin", "1234"));
+        UserManager um = new UserManager();
+        FileManager fm = new FileManager();
+        Scanner sc = new Scanner(System.in);
 
-        if (login()) {
-            menu();
-        } else {
-            System.out.println("Login Failed");
-        }
-    }
-
-    public static boolean login() {
+        // LOGIN
         System.out.print("Username: ");
         String u = sc.nextLine();
 
         System.out.print("Password: ");
         String p = sc.nextLine();
 
-        for (User user : users) {
-            if (user.login(u, p)) {
-                return true;
-            }
-        }
-        return false;
-    }
+        User user = um.login(u, p);
 
-    public static void menu() {
+        if (user == null) {
+            System.out.println("Login failed.");
+            return;
+        }
+
+        System.out.println("\nWelcome " + user.username);
 
         while (true) {
-            System.out.println("\n1. Create File");
-            System.out.println("2. Write File");
-            System.out.println("3. Read File");
-            System.out.println("4. Update File");
-            System.out.println("5. Delete File");
-            System.out.println("6. Exit");
 
-            System.out.print("Choice: ");
+            fm.showDirectory();
+
+            System.out.println("\n--- MENU ---");
+            System.out.println("1. Create File");
+            System.out.println("2. Read File");
+            System.out.println("3. Update File");
+            System.out.println("4. Delete File");
+            System.out.println("5. Create Folder");
+            System.out.println("6. Delete Folder");
+            System.out.println("7. Enter Folder");
+            System.out.println("8. Go Back");
+
+            if (user.role.equals("admin")) {
+                System.out.println("9. Add User");
+                System.out.println("10. View Users");
+            }
+
+            System.out.println("0. Exit");
+
             int choice = sc.nextInt();
-            sc.nextLine(); // clear buffer
+            sc.nextLine();
 
-            System.out.print("Enter file name: ");
-            String name = sc.nextLine();
+            switch (choice) {
 
-            // ❗ HARD CODED PATH (for portability testing later)
-            String path = "C:\\file_system\\";
+                case 1 -> fm.createFile();
+                case 2 -> fm.readFile();
+                case 3 -> fm.updateFile();
+                case 4 -> fm.deleteFile();
+                case 5 -> fm.createFolder();
+                case 6 -> fm.deleteFolder();
+                case 7 -> fm.enterFolder();
+                case 8 -> fm.goBack();
 
-            MyFile file = new MyFile(name, path);
+                case 9 -> {
+                    if (user.role.equals("admin")) {
+                        System.out.print("Username: ");
+                        String nu = sc.nextLine();
 
-            if (choice == 1) {
-                fm.createFile(file);
-            }
-            else if (choice == 2) {
-                System.out.print("Content: ");
-                String content = sc.nextLine();
-                fm.writeFile(file, content);
-            }
-            else if (choice == 3) {
-                fm.readFile(file);
-            }
-            else if (choice == 4) {
-                System.out.print("New Content: ");
-                String content = sc.nextLine();
-                fm.updateFile(file, content);
-            }
-            else if (choice == 5) {
-                fm.deleteFile(file);
-            }
-            else if (choice == 6) {
-                break;
+                        System.out.print("Password: ");
+                        String np = sc.nextLine();
+
+                        um.addUser(new User(nu, np, "user"));
+                    }
+                }
+
+                case 10 -> {
+                    if (user.role.equals("admin")) {
+                        um.viewUsers();
+                    }
+                }
+
+                case 0 -> {
+                    System.out.println("Goodbye!");
+                    return;
+                }
             }
         }
     }

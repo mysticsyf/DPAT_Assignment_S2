@@ -9,96 +9,158 @@ package dpat_assignment_solution1;
  * @author yifen
  */
 import java.io.*;
+import java.util.Scanner;
 
 public class FileManager {
 
-    public void createFile(MyFile file) {
-        try {
-            File f = new File(file.getFullPath());
-            if (f.createNewFile()) {
-                System.out.println("File created.");
+    private String currentPath = "data/";
+    private Scanner sc = new Scanner(System.in);
+
+    // SHOW DIRECTORY CONTENTS
+    public void showDirectory() {
+        File dir = new File(currentPath);
+
+        System.out.println("\n--- CURRENT PATH: " + currentPath + " ---");
+
+        File[] files = dir.listFiles();
+
+        if (files == null || files.length == 0) {
+            System.out.println("Empty folder.");
+            return;
+        }
+
+        for (File f : files) {
+            if (f.isDirectory()) {
+                System.out.println("[Folder] " + f.getName());
             } else {
-                System.out.println("File already exists.");
+                System.out.println("[File] " + f.getName());
             }
-        } catch (Exception e) {
-            System.out.println("Error creating file.");
         }
     }
 
-    public void writeFile(MyFile file, String content) {
+    // CREATE FILE
+    public void createFile() {
         try {
-            FileWriter fw = new FileWriter(file.getFullPath());
-            fw.write(content);
-            fw.close();
-            System.out.println("Written to file.");
-        } catch (Exception e) {
-            System.out.println("Error writing file.");
-        }
+            System.out.print("File name: ");
+            String name = sc.nextLine();
+
+            File f = new File(currentPath + name + ".txt");
+            f.createNewFile();
+
+            System.out.println("File created.");
+        } catch (Exception e) {}
     }
 
-    public void readFile(MyFile file) {
+    // READ FILE
+    public void readFile() {
         try {
-            BufferedReader br = new BufferedReader(new FileReader(file.getFullPath()));
+            System.out.print("File name: ");
+            String name = sc.nextLine();
+
+            BufferedReader br = new BufferedReader(
+                new FileReader(currentPath + name)
+            );
+
             String line;
             while ((line = br.readLine()) != null) {
                 System.out.println(line);
             }
+
             br.close();
+
         } catch (Exception e) {
             System.out.println("Error reading file.");
         }
     }
 
-    public void updateFile(MyFile file, String newContent) {
-        writeFile(file, newContent); // overwrite
-        System.out.println("File updated.");
+    // UPDATE FILE
+    public void updateFile() {
+        try {
+            System.out.print("File name: ");
+            String name = sc.nextLine();
+
+            System.out.print("Content: ");
+            String content = sc.nextLine();
+
+            FileWriter fw = new FileWriter(currentPath + name);
+            fw.write(content);
+            fw.close();
+
+            System.out.println("File updated.");
+
+        } catch (Exception e) {}
     }
 
-    public void deleteFile(MyFile file) {
-        File f = new File(file.getFullPath());
+    // DELETE FILE
+    public void deleteFile() {
+        System.out.print("File name: ");
+        String name = sc.nextLine();
+
+        File f = new File(currentPath + name);
+
         if (f.delete()) {
             System.out.println("File deleted.");
         } else {
-            System.out.println("File not found.");
+            System.out.println("Delete failed.");
         }
     }
-    
-    public void createFolder(Folder folder) {
-        File dir = new File(folder.getFullPath());
 
-        if (dir.exists()) {
-            System.out.println("Folder already exists.");
+    // CREATE FOLDER
+    public void createFolder() {
+        System.out.print("Folder name: ");
+        String name = sc.nextLine();
+
+        File f = new File(currentPath + name);
+
+        if (f.mkdir()) {
+            System.out.println("Folder created.");
         } else {
-            if (dir.mkdir()) {
-                System.out.println("Folder created.");
-            } else {
-                System.out.println("Failed to create folder.");
-            }
+            System.out.println("Failed.");
         }
     }
-    
-    public void deleteFolder(Folder folder) {
-        File dir = new File(folder.getFullPath());
 
-        if (dir.exists() && dir.isDirectory()) {
-            if (dir.delete()) {
-                System.out.println("Folder deleted.");
-            } else {
-                System.out.println("Folder not empty or failed to delete.");
-            }
+    // DELETE FOLDER
+    public void deleteFolder() {
+        System.out.print("Folder name: ");
+        String name = sc.nextLine();
+
+        File f = new File(currentPath + name);
+
+        if (f.delete()) {
+            System.out.println("Folder deleted.");
+        } else {
+            System.out.println("Failed (folder must be empty).");
+        }
+    }
+
+    // ENTER FOLDER
+    public void enterFolder() {
+        System.out.print("Folder name: ");
+        String name = sc.nextLine();
+
+        File f = new File(currentPath + name);
+
+        if (f.exists() && f.isDirectory()) {
+            currentPath = currentPath + name + "/";
+            System.out.println("Entered: " + name);
         } else {
             System.out.println("Folder not found.");
         }
     }
-    
-    public void moveFile(MyFile file, Folder targetFolder) {
-        File source = new File(file.getFullPath());
-        File target = new File(targetFolder.getFullPath() + "\\" + file.getFileName());
 
-        if (source.renameTo(target)) {
-            System.out.println("File moved successfully.");
-        } else {
-            System.out.println("Failed to move file.");
+    // GO BACK
+    public void goBack() {
+        if (currentPath.equals("data/")) {
+            System.out.println("Already at root.");
+            return;
+        }
+
+        File f = new File(currentPath);
+        String parent = f.getParent();
+
+        if (parent != null) {
+            currentPath = parent + "/";
+            System.out.println("Back to: " + currentPath);
         }
     }
 }

@@ -9,15 +9,13 @@ package dpat_assignment_solution1;
  * @author yifen
  */
 public class User {
-    private String username;
-    private String password;
+    public String username;
+    public String password;
+    public String role;
 
-    public User(String username, String password) {
+    public User(String username, String password, String role) {
         this.username = username;
         this.password = password;
-    }
-
-    public boolean login(String u, String p) {
-        return username.equals(u) && password.equals(p);
+        this.role = role;
     }
 }
