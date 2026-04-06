@@ -41,46 +41,87 @@ public class FileManager {
     // CREATE FILE
     public void createFile() {
         try {
-            System.out.print("File name: ");
-            String name = sc.nextLine();
+            Scanner sc = new Scanner(System.in);
 
-            File f = new File(currentPath + name + ".txt");
-            f.createNewFile();
+            System.out.print("Enter file name (with .txt): ");
+            String fileName = sc.nextLine();
 
-            System.out.println("File created.");
-        } catch (Exception e) {}
-    }
+            File file = new File(currentPath + fileName);
 
-    // READ FILE
-    public void readFile() {
-        try {
-            System.out.print("File name: ");
-            String name = sc.nextLine();
+            if (file.createNewFile()) {
+                System.out.println("File created successfully.");
 
-            BufferedReader br = new BufferedReader(
-                new FileReader(currentPath + name)
-            );
+                System.out.println("Enter file content (type END to stop):");
 
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
+                FileWriter fw = new FileWriter(file);
+
+                while (true) {
+                    String line = sc.nextLine();
+                    if (line.equalsIgnoreCase("END")) break;
+                    fw.write(line + "\n");
+                }
+
+                fw.close();
+                System.out.println("Content saved.");
+            } else {
+                System.out.println("File already exists.");
             }
 
-            br.close();
-
         } catch (Exception e) {
-            System.out.println("Error reading file.");
+            System.out.println("Error creating file.");
         }
     }
+    
+    // READ FILE
+    public void readFile() {
+    try {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter file name (with .txt): ");
+        String fileName = sc.nextLine();
+
+        File file = new File(currentPath + fileName);
+
+        if (!file.exists()) {
+            System.out.println("File not found.");
+            return;
+        }
+
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String line;
+        boolean isEmpty = true;
+
+        System.out.println("\n--- FILE CONTENT ---");
+
+        while ((line = br.readLine()) != null) {
+            isEmpty = false;
+            System.out.println(line);
+        }
+
+        br.close();
+
+        if (isEmpty) {
+            System.out.println("(This file is empty)");
+        }
+
+    } catch (Exception e) {
+        System.out.println("Error reading file.");
+    }
+}
 
     // UPDATE FILE
     public void updateFile() {
         try {
-            System.out.print("File name: ");
+            System.out.print("Enter file name (with .txt): ");
             String name = sc.nextLine();
 
-            System.out.print("Content: ");
-            String content = sc.nextLine();
+            System.out.println("Enter file content (type END to stop):");
+            String content = "";
+            while (true) {
+                    String line = sc.nextLine();
+                    if (line.equalsIgnoreCase("END")) break;
+                    content = line + "\n";
+                }
 
             FileWriter fw = new FileWriter(currentPath + name);
             fw.write(content);
@@ -93,7 +134,7 @@ public class FileManager {
 
     // DELETE FILE
     public void deleteFile() {
-        System.out.print("File name: ");
+        System.out.print("Enter file name (with .txt): ");
         String name = sc.nextLine();
 
         File f = new File(currentPath + name);
@@ -108,10 +149,10 @@ public class FileManager {
     //RENAME FILE
     public void renameFile() {
         try {
-            System.out.print("Current file name: ");
+            System.out.print("Enter file name (with .txt): ");
             String oldName = sc.nextLine();
 
-            System.out.print("New file name: ");
+            System.out.print("Enter new file name (with .txt): ");
             String newName = sc.nextLine();
 
             File oldFile = new File(currentPath + oldName);
