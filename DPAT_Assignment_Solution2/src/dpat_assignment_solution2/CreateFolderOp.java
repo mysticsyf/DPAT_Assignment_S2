@@ -18,7 +18,17 @@ public class CreateFolderOp implements FileOp {
         System.out.print("Folder name: ");
         String name = sc.nextLine();
         File f = new File(currentPath + name);
-        if (f.mkdir()) System.out.println("Folder created.");
-        else System.out.println("Failed to create folder.");
+
+        // Explicitly check for duplicate names
+        if (f.exists()) {
+            System.out.println("Error: A folder (or file) with the name '" + name + "' already exists.");
+            return; // Abort creation
+        }
+
+        if (f.mkdir()) {
+            System.out.println("Folder created.");
+        } else {
+            System.out.println("Failed to create folder.");
+        }
     }
 }

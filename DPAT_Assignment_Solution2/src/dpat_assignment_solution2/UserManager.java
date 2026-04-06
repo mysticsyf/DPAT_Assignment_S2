@@ -46,6 +46,21 @@ public class UserManager {
     }
 
     public void addUser(User user) {
+        try (BufferedReader br = new BufferedReader(new FileReader(userFile))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data[0].equalsIgnoreCase(user.username)) {
+                    System.out.println("Error: User '" + user.username + "' already exists. Cannot add duplicate.");
+                    return; 
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error reading user database to check for duplicates.");
+            return;
+        }
+
+        
         try (FileWriter fw = new FileWriter(userFile, true)) {
             fw.write(user.username + "," + user.password + "," + user.role + "\n");
             System.out.println("User added successfully.");

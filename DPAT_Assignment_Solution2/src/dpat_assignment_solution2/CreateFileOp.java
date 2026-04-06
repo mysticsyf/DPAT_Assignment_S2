@@ -14,12 +14,19 @@ import java.util.Scanner;
 public class CreateFileOp implements FileOp {
     @Override
     public void execute(String path) {
+        File f = new File(path);
+
+        if (f.exists()) {
+            System.out.println("Error: A file named '" + f.getName() + "' already exists.");
+            return; // Abort creation
+        }
+
         try {
-            File f = new File(path);
             if (f.createNewFile()) {
-                System.out.println("File created.");
+                System.out.println("File created: " + f.getName());
                 System.out.println("Enter content (type 'END' to finish):");
                 Scanner sc = new Scanner(System.in);
+                
                 try (FileWriter fw = new FileWriter(f)) {
                     while (true) {
                         String line = sc.nextLine();
@@ -27,9 +34,9 @@ public class CreateFileOp implements FileOp {
                         fw.write(line + "\n");
                     }
                 }
-            } else System.out.println("File already exists.");
+            }
         } catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("Error creating file: " + e.getMessage());
         }
     }
 }
