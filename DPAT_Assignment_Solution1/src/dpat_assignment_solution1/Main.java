@@ -55,6 +55,7 @@ public class Main {
 
             System.out.println("0. Exit");
 
+            System.out.print("Insert Number of Choice: ");
             int choice = sc.nextInt();
             sc.nextLine();
 
