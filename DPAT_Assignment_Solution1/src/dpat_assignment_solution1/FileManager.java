@@ -16,9 +16,22 @@ public class FileManager {
     private String currentPath = "data/";
     private Scanner sc = new Scanner(System.in);
 
+    // Helper method to automatically add .txt if the user forgets it
+    private String formatFileName(String name) {
+        if (!name.toLowerCase().endsWith(".txt")) {
+            return name + ".txt";
+        }
+        return name;
+    }
+
     // SHOW DIRECTORY CONTENTS
     public void showDirectory() {
         File dir = new File(currentPath);
+
+        // Ensure directory exists
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
 
         System.out.println("\n--- CURRENT PATH: " + currentPath + " ---");
 
@@ -41,119 +54,118 @@ public class FileManager {
     // CREATE FILE
     public void createFile() {
         try {
-            Scanner sc = new Scanner(System.in);
-
-            System.out.print("Enter file name (with .txt): ");
-            String fileName = sc.nextLine();
+            System.out.print("Enter file name: ");
+            String fileName = formatFileName(sc.nextLine());
 
             File file = new File(currentPath + fileName);
 
             if (file.createNewFile()) {
                 System.out.println("File created successfully.");
-
                 System.out.println("Enter file content (type END to stop):");
 
-                FileWriter fw = new FileWriter(file);
-
-                while (true) {
-                    String line = sc.nextLine();
-                    if (line.equalsIgnoreCase("END")) break;
-                    fw.write(line + "\n");
+                // Try-with-resources automatically closes the writer
+                try (FileWriter fw = new FileWriter(file)) {
+                    while (true) {
+                        String line = sc.nextLine();
+                        if (line.equalsIgnoreCase("END")) break;
+                        fw.write(line + "\n");
+                    }
                 }
-
-                fw.close();
                 System.out.println("Content saved.");
             } else {
                 System.out.println("File already exists.");
             }
 
         } catch (Exception e) {
-            System.out.println("Error creating file.");
+            System.out.println("Error creating file: " + e.getMessage());
         }
     }
     
     // READ FILE
     public void readFile() {
-    try {
-        Scanner sc = new Scanner(System.in);
+        try {
+            System.out.print("Enter file name: ");
+            String fileName = formatFileName(sc.nextLine());
 
-        System.out.print("Enter file name (with .txt): ");
-        String fileName = sc.nextLine();
+            File file = new File(currentPath + fileName);
 
-        File file = new File(currentPath + fileName);
+            if (!file.exists()) {
+                System.out.println("File not found.");
+                return;
+            }
 
-        if (!file.exists()) {
-            System.out.println("File not found.");
-            return;
+            System.out.println("\n--- FILE CONTENT ---");
+            boolean isEmpty = true;
+
+            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    isEmpty = false;
+                    System.out.println(line);
+                }
+            }
+
+            if (isEmpty) {
+                System.out.println("(This file is empty)");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error reading file: " + e.getMessage());
         }
-
-        BufferedReader br = new BufferedReader(new FileReader(file));
-        String line;
-        boolean isEmpty = true;
-
-        System.out.println("\n--- FILE CONTENT ---");
-
-        while ((line = br.readLine()) != null) {
-            isEmpty = false;
-            System.out.println(line);
-        }
-
-        br.close();
-
-        if (isEmpty) {
-            System.out.println("(This file is empty)");
-        }
-
-    } catch (Exception e) {
-        System.out.println("Error reading file.");
     }
-}
 
     // UPDATE FILE
     public void updateFile() {
         try {
-            System.out.print("Enter file name (with .txt): ");
-            String name = sc.nextLine();
+            System.out.print("Enter file name to update: ");
+            String name = formatFileName(sc.nextLine());
+            
+            File file = new File(currentPath + name);
+            if (!file.exists()) {
+                System.out.println("File not found. Please create it first.");
+                return;
+            }
 
-            System.out.println("Enter file content (type END to stop):");
-            String content = "";
-            while (true) {
+            System.out.println("Enter file content to APPEND (type END to stop):");
+
+            // true parameter in FileWriter enables "append" mode
+            try (FileWriter fw = new FileWriter(file, true)) {
+                while (true) {
                     String line = sc.nextLine();
                     if (line.equalsIgnoreCase("END")) break;
-                    content = line + "\n";
+                    fw.write(line + "\n");
                 }
-
-            FileWriter fw = new FileWriter(currentPath + name);
-            fw.write(content);
-            fw.close();
+            }
 
             System.out.println("File updated.");
 
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            System.out.println("Error updating file: " + e.getMessage());
+        }
     }
 
     // DELETE FILE
     public void deleteFile() {
-        System.out.print("Enter file name (with .txt): ");
-        String name = sc.nextLine();
+        System.out.print("Enter file name to delete: ");
+        String name = formatFileName(sc.nextLine());
 
         File f = new File(currentPath + name);
 
-        if (f.delete()) {
+        if (f.exists() && f.delete()) {
             System.out.println("File deleted.");
         } else {
-            System.out.println("Delete failed.");
+            System.out.println("Delete failed. File might not exist.");
         }
     }
     
-    //RENAME FILE
+    // RENAME FILE
     public void renameFile() {
         try {
-            System.out.print("Enter file name (with .txt): ");
-            String oldName = sc.nextLine();
+            System.out.print("Enter current file name: ");
+            String oldName = formatFileName(sc.nextLine());
 
-            System.out.print("Enter new file name (with .txt): ");
-            String newName = sc.nextLine();
+            System.out.print("Enter new file name: ");
+            String newName = formatFileName(sc.nextLine());
 
             File oldFile = new File(currentPath + oldName);
             File newFile = new File(currentPath + newName);
@@ -162,14 +174,14 @@ public class FileManager {
                 if (oldFile.renameTo(newFile)) {
                     System.out.println("File renamed successfully.");
                 } else {
-                    System.out.println("Rename failed.");
+                    System.out.println("Rename failed. A file with the new name might already exist.");
                 }
             } else {
                 System.out.println("File not found.");
             }
 
         } catch (Exception e) {
-            System.out.println("Error renaming file.");
+            System.out.println("Error renaming file: " + e.getMessage());
         }
     }
 
@@ -183,7 +195,7 @@ public class FileManager {
         if (f.mkdir()) {
             System.out.println("Folder created.");
         } else {
-            System.out.println("Failed.");
+            System.out.println("Failed to create folder. It might already exist.");
         }
     }
 
@@ -194,14 +206,18 @@ public class FileManager {
 
         File f = new File(currentPath + name);
 
-        if (f.delete()) {
-            System.out.println("Folder deleted.");
+        if (f.exists() && f.isDirectory()) {
+            if (f.delete()) {
+                System.out.println("Folder deleted.");
+            } else {
+                System.out.println("Failed (folder must be empty to delete).");
+            }
         } else {
-            System.out.println("Failed (folder must be empty).");
+            System.out.println("Folder not found.");
         }
     }
     
-    //RENAME FOLDER
+    // RENAME FOLDER
     public void renameFolder() {
         try {
             System.out.print("Current folder name: ");
@@ -224,7 +240,7 @@ public class FileManager {
             }
 
         } catch (Exception e) {
-            System.out.println("Error renaming folder.");
+            System.out.println("Error renaming folder: " + e.getMessage());
         }
     }
 
@@ -232,6 +248,12 @@ public class FileManager {
     public void enterFolder() {
         System.out.print("Folder name: ");
         String name = sc.nextLine();
+        
+        // Basic security to prevent directory traversal attacks (escaping the data folder)
+        if (name.contains("..") || name.contains("/")) {
+            System.out.println("Invalid folder name.");
+            return;
+        }
 
         File f = new File(currentPath + name);
 
@@ -246,7 +268,7 @@ public class FileManager {
     // GO BACK
     public void goBack() {
         if (currentPath.equals("data/")) {
-            System.out.println("Already at root.");
+            System.out.println("Already at root directory.");
             return;
         }
 
@@ -254,7 +276,8 @@ public class FileManager {
         String parent = f.getParent();
 
         if (parent != null) {
-            currentPath = parent + "/";
+            // Because getParent() strips the trailing slash, we add it back
+            currentPath = parent.replace('\\', '/') + "/";
             System.out.println("Back to: " + currentPath);
         }
     }

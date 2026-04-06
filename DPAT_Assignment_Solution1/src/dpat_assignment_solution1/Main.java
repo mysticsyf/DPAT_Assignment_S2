@@ -1,6 +1,6 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package dpat_assignment_solution1;
 
@@ -28,7 +28,7 @@ public class Main {
         User user = um.login(username, password);
 
         if (user == null) {
-            System.out.println("Login failed.");
+            System.out.println("Login failed. System exiting.");
             return;
         }
 
@@ -50,17 +50,21 @@ public class Main {
             }
 
             System.out.println("0. Exit");
-
             System.out.print("Input: ");
-            int choice = sc.nextInt();
-            sc.nextLine();
+            
+            int choice = -1;
+            try {
+                choice = Integer.parseInt(sc.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                continue;
+            }
 
             switch (choice) {
 
                 // ================= FILE MENU =================
                 case 1 -> {
                     while (true) {
-
                         fm.showDirectory();
                         
                         System.out.println("\n--- FILE MENU ---");
@@ -72,8 +76,13 @@ public class Main {
                         System.out.println("6. Back");
 
                         System.out.print("Input: ");
-                        int c = sc.nextInt();
-                        sc.nextLine();
+                        int c = -1;
+                        try {
+                            c = Integer.parseInt(sc.nextLine());
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid input.");
+                            continue;
+                        }
 
                         switch (c) {
                             case 1 -> fm.createFile();
@@ -81,10 +90,8 @@ public class Main {
                             case 3 -> fm.updateFile();
                             case 4 -> fm.deleteFile();
                             case 5 -> fm.renameFile();
-                            case 6 -> {
-                                System.out.println("Back to main menu...");
-                                break;
-                            }
+                            case 6 -> System.out.println("Back to main menu...");
+                            default -> System.out.println("Invalid choice.");
                         }
 
                         if (c == 6) break;
@@ -94,7 +101,6 @@ public class Main {
                 // ================= FOLDER MENU =================
                 case 2 -> {
                     while (true) {
-
                         fm.showDirectory();
                         
                         System.out.println("\n--- FOLDER MENU ---");
@@ -104,17 +110,20 @@ public class Main {
                         System.out.println("4. Back");
 
                         System.out.print("Input: ");
-                        int c = sc.nextInt();
-                        sc.nextLine();
+                        int c = -1;
+                        try {
+                            c = Integer.parseInt(sc.nextLine());
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid input.");
+                            continue;
+                        }
 
                         switch (c) {
                             case 1 -> fm.createFolder();
                             case 2 -> fm.deleteFolder();
                             case 3 -> fm.renameFolder();
-                            case 4 -> {
-                                System.out.println("Back to main menu...");
-                                break;
-                            }
+                            case 4 -> System.out.println("Back to main menu...");
+                            default -> System.out.println("Invalid choice.");
                         }
 
                         if (c == 4) break;
@@ -126,10 +135,12 @@ public class Main {
 
                 // ================= USER MENU (ADMIN ONLY) =================
                 case 5 -> {
-                    if (!user.role.equals("admin")) break;
+                    if (!user.role.equals("admin")) {
+                        System.out.println("Invalid choice.");
+                        break;
+                    }
 
                     while (true) {
-                        
                         um.viewUsers();
 
                         System.out.println("\n--- USER MENU ---");
@@ -138,30 +149,29 @@ public class Main {
                         System.out.println("3. Back");
 
                         System.out.print("Input: ");
-                        int c = sc.nextInt();
-                        sc.nextLine();
+                        int c = -1;
+                        try {
+                            c = Integer.parseInt(sc.nextLine());
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid input.");
+                            continue;
+                        }
 
                         switch (c) {
                             case 1 -> {
                                 System.out.print("New username: ");
                                 String u = sc.nextLine();
-
                                 System.out.print("Password: ");
                                 String p = sc.nextLine();
-
                                 um.addUser(new User(u, p, "user"));
                             }
-
                             case 2 -> {
                                 System.out.print("Username: ");
                                 String u = sc.nextLine();
                                 um.deleteUser(u);
                             }
-
-                            case 3 -> {
-                                System.out.println("Back to main menu...");
-                                break;
-                            }
+                            case 3 -> System.out.println("Back to main menu...");
+                            default -> System.out.println("Invalid choice.");
                         }
 
                         if (c == 3) break;
@@ -171,8 +181,10 @@ public class Main {
                 // ================= EXIT =================
                 case 0 -> {
                     System.out.println("Exiting system...");
+                    sc.close();
                     return;
                 }
+                default -> System.out.println("Invalid choice. Please select an option from the menu.");
             }
         }
     }
