@@ -36,13 +36,17 @@ public class Main {
 
         // ================= MAIN LOOP =================
         while (true) {
+            
+            fm.showDirectory();
 
             System.out.println("\n=== MAIN MENU ===");
             System.out.println("1. File Operations");
             System.out.println("2. Folder Operations");
+            System.out.println("3. Enter Folder");
+            System.out.println("4. Go Back Folder");
 
             if (user.role.equals("admin")) {
-                System.out.println("3. User Operations");
+                System.out.println("5. User Operations");
             }
 
             System.out.println("0. Exit");
@@ -56,6 +60,8 @@ public class Main {
                 case 1 -> {
                     while (true) {
 
+                        fm.showDirectory();
+                        
                         System.out.println("\n--- FILE MENU ---");
                         System.out.println("1. Create File");
                         System.out.println("2. Read File");
@@ -87,13 +93,13 @@ public class Main {
                 case 2 -> {
                     while (true) {
 
+                        fm.showDirectory();
+                        
                         System.out.println("\n--- FOLDER MENU ---");
                         System.out.println("1. Create Folder");
                         System.out.println("2. Delete Folder");
-                        System.out.println("3. Enter Folder");
-                        System.out.println("4. Go Back Folder");
-                        System.out.println("5. Rename Folder");
-                        System.out.println("6. Back");
+                        System.out.println("3. Rename Folder");
+                        System.out.println("4. Back");
 
                         int c = sc.nextInt();
                         sc.nextLine();
@@ -101,21 +107,22 @@ public class Main {
                         switch (c) {
                             case 1 -> fm.createFolder();
                             case 2 -> fm.deleteFolder();
-                            case 3 -> fm.enterFolder();
-                            case 4 -> fm.goBack();
-                            case 5 -> fm.renameFolder();
-                            case 6 -> {
+                            case 3 -> fm.renameFolder();
+                            case 4 -> {
                                 System.out.println("Back to main menu...");
                                 break;
                             }
                         }
 
-                        if (c == 6) break;
+                        if (c == 4) break;
                     }
                 }
+                
+                case 3 -> fm.enterFolder();
+                case 4 -> fm.goBack();
 
                 // ================= USER MENU (ADMIN ONLY) =================
-                case 3 -> {
+                case 5 -> {
                     if (!user.role.equals("admin")) break;
 
                     while (true) {
