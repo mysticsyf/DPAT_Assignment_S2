@@ -104,6 +104,33 @@ public class FileManager {
             System.out.println("Delete failed.");
         }
     }
+    
+    //RENAME FILE
+    public void renameFile() {
+        try {
+            System.out.print("Current file name: ");
+            String oldName = sc.nextLine();
+
+            System.out.print("New file name: ");
+            String newName = sc.nextLine();
+
+            File oldFile = new File(currentPath + oldName);
+            File newFile = new File(currentPath + newName);
+
+            if (oldFile.exists()) {
+                if (oldFile.renameTo(newFile)) {
+                    System.out.println("File renamed successfully.");
+                } else {
+                    System.out.println("Rename failed.");
+                }
+            } else {
+                System.out.println("File not found.");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error renaming file.");
+        }
+    }
 
     // CREATE FOLDER
     public void createFolder() {
@@ -130,6 +157,33 @@ public class FileManager {
             System.out.println("Folder deleted.");
         } else {
             System.out.println("Failed (folder must be empty).");
+        }
+    }
+    
+    //RENAME FOLDER
+    public void renameFolder() {
+        try {
+            System.out.print("Current folder name: ");
+            String oldName = sc.nextLine();
+
+            System.out.print("New folder name: ");
+            String newName = sc.nextLine();
+
+            File oldFolder = new File(currentPath + oldName);
+            File newFolder = new File(currentPath + newName);
+
+            if (oldFolder.exists() && oldFolder.isDirectory()) {
+                if (oldFolder.renameTo(newFolder)) {
+                    System.out.println("Folder renamed successfully.");
+                } else {
+                    System.out.println("Rename failed.");
+                }
+            } else {
+                System.out.println("Folder not found.");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error renaming folder.");
         }
     }
 
